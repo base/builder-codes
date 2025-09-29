@@ -2,7 +2,7 @@
 pragma solidity ^0.8.29;
 
 import {Initializable} from "openzeppelin-contracts-upgradeable/proxy/utils/Initializable.sol";
-import {ERC721Upgradeable} from "openzeppelin-contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import {ERC721Upgradeable, IERC721} from "openzeppelin-contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {AccessControlUpgradeable} from "openzeppelin-contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import {Ownable2StepUpgradeable} from "openzeppelin-contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
 import {UUPSUpgradeable} from "openzeppelin-contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
@@ -35,6 +35,9 @@ contract BuilderCodes is
 
     /// @notice Role identifier for addresses authorized to call register or sign registrations
     bytes32 public constant REGISTER_ROLE = keccak256("REGISTER_ROLE");
+
+    /// @notice Role identifier for addresses authorized to transfer codes (still must own token or receive approval)
+    bytes32 public constant TRANSFER_ROLE = keccak256("TRANSFER_ROLE");
 
     /// @notice Role identifier for addresses authorized to update metadata for one or all codes
     bytes32 public constant METADATA_ROLE = keccak256("METADATA_ROLE");
@@ -152,6 +155,15 @@ contract BuilderCodes is
         }
 
         _register(code, initialOwner, payoutAddress);
+    }
+
+    /// @inheritdoc ERC721Upgradeable
+    ///
+    /// @dev Requires sender has TRANSFER_ROLE
+    /// @dev ERC721Upgradeable.safeTransferFrom inherits this function (and no other functions can initiate transfers)
+    function transferFrom(address from, address to, uint256 tokenId) public override(ERC721Upgradeable, IERC721) {
+        _checkRole(TRANSFER_ROLE, msg.sender);
+        super.transferFrom(from, to, tokenId);
     }
 
     /// @notice Updates the metadata for a builder code

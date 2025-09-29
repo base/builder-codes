@@ -18,6 +18,10 @@ abstract contract BuilderCodesTest is Test {
     address public owner;
     address public registrar;
 
+    bytes32 public constant REGISTER_ROLE = keccak256("REGISTER_ROLE");
+    bytes32 public constant TRANSFER_ROLE = keccak256("TRANSFER_ROLE");
+    bytes32 public constant METADATA_ROLE = keccak256("METADATA_ROLE");
+
     function setUp() public virtual {
         owner = vm.addr(OWNER_PK);
         registrar = vm.addr(REGISTRAR_PK);
