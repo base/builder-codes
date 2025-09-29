@@ -52,4 +52,53 @@ contract BuilderCodesTransfersTest is BuilderCodesTest {
         assertEq(builderCodes.balanceOf(from), 0);
         assertEq(builderCodes.balanceOf(to), 1);
     }
+
+    /// @notice Test that transferred code preserves the payout address
+    ///
+    /// @param codeSeed The seed for generating the code
+    /// @param initialOwner The initial owner address
+    /// @param payoutAddress The payout address
+    /// @param secondOwner The second owner address
+    /// @param newPayoutAddress The new payout address for testing updates
+    function test_transferedCodePreservesPayoutAddress(
+        uint256 codeSeed,
+        address initialOwner,
+        address payoutAddress,
+        address secondOwner,
+        address newPayoutAddress
+    ) public {
+        initialOwner = _boundNonZeroAddress(initialOwner);
+        payoutAddress = _boundNonZeroAddress(payoutAddress);
+        secondOwner = _boundNonZeroAddress(secondOwner);
+        newPayoutAddress = _boundNonZeroAddress(newPayoutAddress);
+
+        vm.assume(initialOwner != secondOwner);
+
+        string memory code = _generateValidCode(codeSeed);
+
+        // Register the code with initial owner and payout address
+        vm.prank(registrar);
+        builderCodes.register(code, initialOwner, payoutAddress);
+
+        // Verify initial state
+        uint256 tokenId = builderCodes.toTokenId(code);
+        assertEq(builderCodes.ownerOf(tokenId), initialOwner);
+        assertEq(builderCodes.payoutAddress(code), payoutAddress);
+
+        // Transfer the code to second owner
+        vm.prank(owner);
+        builderCodes.grantRole(TRANSFER_ROLE, initialOwner);
+        vm.prank(initialOwner);
+        builderCodes.transferFrom(initialOwner, secondOwner, tokenId);
+
+        // Verify ownership changed but payout address preserved
+        assertEq(builderCodes.ownerOf(tokenId), secondOwner);
+        assertEq(builderCodes.payoutAddress(code), payoutAddress, "Payout address should be preserved after transfer");
+
+        // Verify new owner can update payout address
+        vm.prank(secondOwner);
+        builderCodes.updatePayoutAddress(code, newPayoutAddress);
+
+        assertEq(builderCodes.payoutAddress(code), newPayoutAddress);
+    }
 }
