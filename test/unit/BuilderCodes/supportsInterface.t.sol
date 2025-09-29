@@ -35,7 +35,7 @@ contract SupportsInterfaceTest is BuilderCodesTest {
         vm.assume(interfaceId != 0x49064906); // ERC4906
         vm.assume(interfaceId != 0x7965db0b); // AccessControl
         vm.assume(interfaceId != 0x5b5e139f); // ERC721Metadata
-        
+
         assertFalse(builderCodes.supportsInterface(interfaceId));
     }
 }

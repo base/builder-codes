@@ -9,10 +9,7 @@ contract IsValidCodeTest is BuilderCodesTest {
     ///
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
-    function test_isValidCode_false_emptyCode(
-        address initialOwner,
-        address initialPayoutAddress
-    ) public {
+    function test_isValidCode_false_emptyCode(address initialOwner, address initialPayoutAddress) public {
         assertFalse(builderCodes.isValidCode(""));
     }
 
@@ -49,11 +46,9 @@ contract IsValidCodeTest is BuilderCodesTest {
     /// @param codeSeed The seed for generating the code
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
-    function test_isValidCode_true_validCode(
-        uint256 codeSeed,
-        address initialOwner,
-        address initialPayoutAddress
-    ) public {
+    function test_isValidCode_true_validCode(uint256 codeSeed, address initialOwner, address initialPayoutAddress)
+        public
+    {
         string memory validCode = _generateValidCode(codeSeed);
         assertTrue(builderCodes.isValidCode(validCode));
     }
@@ -62,10 +57,7 @@ contract IsValidCodeTest is BuilderCodesTest {
     ///
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
-    function test_isValidCode_true_singleCharacter(
-        address initialOwner,
-        address initialPayoutAddress
-    ) public {
+    function test_isValidCode_true_singleCharacter(address initialOwner, address initialPayoutAddress) public {
         assertTrue(builderCodes.isValidCode("a"));
         assertTrue(builderCodes.isValidCode("0"));
         assertTrue(builderCodes.isValidCode("_"));
@@ -75,10 +67,7 @@ contract IsValidCodeTest is BuilderCodesTest {
     ///
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
-    function test_isValidCode_true_32Characters(
-        address initialOwner,
-        address initialPayoutAddress
-    ) public {
+    function test_isValidCode_true_32Characters(address initialOwner, address initialPayoutAddress) public {
         string memory code32 = "abcdefghijklmnopqrstuvwxyz012345";
         assertTrue(builderCodes.isValidCode(code32));
     }
@@ -87,10 +76,7 @@ contract IsValidCodeTest is BuilderCodesTest {
     ///
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
-    function test_isValidCode_true_underscores(
-        address initialOwner,
-        address initialPayoutAddress
-    ) public {
+    function test_isValidCode_true_underscores(address initialOwner, address initialPayoutAddress) public {
         assertTrue(builderCodes.isValidCode("test_code"));
         assertTrue(builderCodes.isValidCode("_underscore_"));
     }
@@ -99,10 +85,7 @@ contract IsValidCodeTest is BuilderCodesTest {
     ///
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
-    function test_isValidCode_true_numericOnly(
-        address initialOwner,
-        address initialPayoutAddress
-    ) public {
+    function test_isValidCode_true_numericOnly(address initialOwner, address initialPayoutAddress) public {
         assertTrue(builderCodes.isValidCode("1234567890"));
     }
 
@@ -110,10 +93,7 @@ contract IsValidCodeTest is BuilderCodesTest {
     ///
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
-    function test_isValidCode_true_alphabeticOnly(
-        address initialOwner,
-        address initialPayoutAddress
-    ) public {
+    function test_isValidCode_true_alphabeticOnly(address initialOwner, address initialPayoutAddress) public {
         assertTrue(builderCodes.isValidCode("abcdefghijklmnopqrstuvwxyz"));
     }
 }

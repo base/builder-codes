@@ -10,10 +10,7 @@ contract ToTokenIdTest is BuilderCodesTest {
     ///
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
-    function test_toTokenId_revert_emptyCode(
-        address initialOwner,
-        address initialPayoutAddress
-    ) public {
+    function test_toTokenId_revert_emptyCode(address initialOwner, address initialPayoutAddress) public {
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, ""));
         builderCodes.toTokenId("");
     }
@@ -60,7 +57,7 @@ contract ToTokenIdTest is BuilderCodesTest {
     ) public {
         string memory validCode = _generateValidCode(codeSeed);
         uint256 tokenId = builderCodes.toTokenId(validCode);
-        
+
         // Verify the conversion is bidirectional
         string memory convertedBack = builderCodes.toCode(tokenId);
         assertEq(validCode, convertedBack);

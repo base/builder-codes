@@ -10,10 +10,7 @@ contract IsRegisteredTest is BuilderCodesTest {
     ///
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
-    function test_isRegistered_revert_emptyCode(
-        address initialOwner,
-        address initialPayoutAddress
-    ) public {
+    function test_isRegistered_revert_emptyCode(address initialOwner, address initialPayoutAddress) public {
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, ""));
         builderCodes.isRegistered("");
     }
@@ -75,11 +72,11 @@ contract IsRegisteredTest is BuilderCodesTest {
         initialOwner = _boundNonZeroAddress(initialOwner);
         initialPayoutAddress = _boundNonZeroAddress(initialPayoutAddress);
         string memory validCode = _generateValidCode(codeSeed);
-        
+
         // Register the code
         vm.prank(registrar);
         builderCodes.register(validCode, initialOwner, initialPayoutAddress);
-        
+
         assertTrue(builderCodes.isRegistered(validCode));
     }
 }
