@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-import {BuilderCodes} from "../../../src/BuilderCodes.sol";
-import {PseudoRandomRegistrar} from "../../../src/registrars/PseudoRandomRegistrar.sol";
+import {BuilderCodes} from "../../src/BuilderCodes.sol";
+import {PseudoRandomRegistrar} from "../../src/PseudoRandomRegistrar.sol";
 
-import {BuilderCodesTest} from "../../lib/BuilderCodesTest.sol";
+import {BuilderCodesTest} from "../lib/BuilderCodesTest.sol";
 
 /// @notice Unit tests for PseudoRandomRegistrar
 contract PseudoRandomRegistrarTest is BuilderCodesTest {

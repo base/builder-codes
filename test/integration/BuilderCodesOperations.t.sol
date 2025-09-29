@@ -146,9 +146,11 @@ contract BuilderCodesOperationsTest is BuilderCodesTest {
         testOwner = _boundNonZeroAddress(testOwner);
         testPayoutAddress = _boundNonZeroAddress(testPayoutAddress);
 
+        vm.assume(tempRegistrar != owner);
         vm.assume(tempRegistrar != tempMetadataManager);
         vm.assume(tempRegistrar != testOwner);
         vm.assume(tempRegistrar != registrar);
+        vm.assume(tempRegistrar != owner);
         vm.assume(tempMetadataManager != testOwner);
 
         // Grant roles
@@ -221,6 +223,7 @@ contract BuilderCodesOperationsTest is BuilderCodesTest {
         randomAddress = _boundNonZeroAddress(randomAddress);
         newMetadataManager = _boundNonZeroAddress(newMetadataManager);
 
+        vm.assume(newOwner != owner);
         vm.assume(newOwner != tempRegistrar);
         vm.assume(newOwner != tempMetadataAddress);
         vm.assume(newOwner != randomAddress);

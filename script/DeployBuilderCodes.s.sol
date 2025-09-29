@@ -1,11 +1,11 @@
-// SPDX-License-Identifier: Unlicense
-pragma solidity 0.8.29;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.29;
 
 import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
-import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+import {ERC1967Proxy} from "openzeppelin-contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
-import {BuilderCodes} from "../../src/BuilderCodes.sol";
+import {BuilderCodes} from "../src/BuilderCodes.sol";
 
 /// @notice Script for deploying the BuilderCodes contract
 contract DeployBuilderCodes is Script {

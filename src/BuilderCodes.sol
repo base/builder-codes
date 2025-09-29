@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {Ownable2StepUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
-import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import {IERC4906} from "@openzeppelin/contracts/interfaces/IERC4906.sol";
-import {IERC165} from "@openzeppelin/contracts/interfaces/IERC165.sol";
+import {Initializable} from "openzeppelin-contracts-upgradeable/proxy/utils/Initializable.sol";
+import {ERC721Upgradeable} from "openzeppelin-contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import {AccessControlUpgradeable} from "openzeppelin-contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import {Ownable2StepUpgradeable} from "openzeppelin-contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
+import {UUPSUpgradeable} from "openzeppelin-contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {IERC4906} from "openzeppelin-contracts/interfaces/IERC4906.sol";
+import {IERC165} from "openzeppelin-contracts/interfaces/IERC165.sol";
 import {LibString} from "solady/utils/LibString.sol";
 import {EIP712} from "solady/utils/EIP712.sol";
 import {SignatureCheckerLib} from "solady/utils/SignatureCheckerLib.sol";
@@ -335,7 +335,13 @@ contract BuilderCodes is
     ///
     /// @return name The domain name for the referral codes
     /// @return version The version of the referral codes
-    function _domainNameAndVersion() internal pure virtual override returns (string memory name, string memory version) {
+    function _domainNameAndVersion()
+        internal
+        pure
+        virtual
+        override
+        returns (string memory name, string memory version)
+    {
         name = "Builder Codes";
         version = "1";
     }

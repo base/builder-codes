@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-import {BuilderCodes} from "../BuilderCodes.sol";
+import {BuilderCodes} from "./BuilderCodes.sol";
 
 /// @notice Pseudo-random registrar for referral codes
 ///
