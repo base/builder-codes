@@ -61,6 +61,7 @@ contract TransferFromTest is BuilderCodesTest {
         to = _boundNonZeroAddress(to);
         vm.assume(from != owner);
         vm.assume(from != to);
+        vm.assume(to != owner);
         payoutAddress = _boundNonZeroAddress(payoutAddress);
 
         // Register the code

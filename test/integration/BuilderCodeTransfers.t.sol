@@ -5,7 +5,7 @@ import {IAccessControl} from "@openzeppelin/contracts/access/IAccessControl.sol"
 
 import {BuilderCodesTest} from "../lib/BuilderCodesTest.sol";
 import {BuilderCodes} from "../../src/BuilderCodes.sol";
-import {MockTransferAgent} from "../lib/mocks/MockTransferAgent.sol";
+import {MockTransferRules} from "../lib/mocks/MockTransferRules.sol";
 
 /// @notice Integration tests for BuilderCodes transfers
 contract BuilderCodesTransfersTest is BuilderCodesTest {
@@ -44,13 +44,13 @@ contract BuilderCodesTransfersTest is BuilderCodesTest {
         assertEq(builderCodes.balanceOf(to), 0);
     }
 
-    /// @notice Test that transferFrom succeeds when a token owner approves a transfer agent
+    /// @notice Test that transferFrom succeeds when a token owner approves transfer rules
     ///
     /// @param from The from address
     /// @param to The to address
     /// @param codeSeed The seed for generating the code
     /// @param payoutAddress The payout address
-    function test_approveTransferAgentToTransferToken(address from, address to, uint256 codeSeed, address payoutAddress)
+    function test_approveTransferRulesToTransferToken(address from, address to, uint256 codeSeed, address payoutAddress)
         public
     {
         from = _boundNonZeroAddress(from);
@@ -58,7 +58,7 @@ contract BuilderCodesTransfersTest is BuilderCodesTest {
         vm.assume(from != owner);
         vm.assume(from != to);
         payoutAddress = _boundNonZeroAddress(payoutAddress);
-        MockTransferAgent transferAgent = new MockTransferAgent(address(builderCodes));
+        MockTransferRules mockTransferRules = new MockTransferRules(address(builderCodes));
 
         // Register the code
         string memory code = _generateValidCode(codeSeed);
@@ -66,21 +66,21 @@ contract BuilderCodesTransfersTest is BuilderCodesTest {
         vm.prank(owner);
         builderCodes.register(code, from, payoutAddress);
 
-        // Owner grants transfer role to transfer agent
+        // Owner grants transfer role to transfer rules
         vm.prank(owner);
-        builderCodes.grantRole(TRANSFER_ROLE, address(transferAgent));
+        builderCodes.grantRole(TRANSFER_ROLE, address(mockTransferRules));
 
-        // Owner approves specific transfer on agent
+        // Owner approves specific transfer on rules
         vm.prank(owner);
-        transferAgent.approveTransfer(from, to);
+        mockTransferRules.approveTransfer(from, to);
 
-        // User approves transfer agent to transfer the token
+        // User approves transfer rules to transfer the token
         vm.prank(from);
-        builderCodes.approve(address(transferAgent), tokenId);
+        builderCodes.approve(address(mockTransferRules), tokenId);
 
         // Transfer the token from `from` to `to`
         vm.prank(from);
-        transferAgent.transfer(to, tokenId);
+        mockTransferRules.transfer(to, tokenId);
 
         // Verify the token was transferred
         assertEq(builderCodes.ownerOf(tokenId), to);

@@ -105,6 +105,7 @@ contract BuilderCodesAdminOperationsTest is BuilderCodesTest {
         vm.assume(tempRegistrar != registrar);
         vm.assume(tempRegistrar != owner);
         vm.assume(tempMetadataManager != testOwner);
+        vm.assume(tempMetadataManager != owner);
 
         // Grant roles
         vm.startPrank(owner);

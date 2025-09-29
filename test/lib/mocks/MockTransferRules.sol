@@ -3,7 +3,7 @@ pragma solidity ^0.8.29;
 
 import {BuilderCodes} from "../../../src/BuilderCodes.sol";
 
-contract MockTransferAgent {
+contract MockTransferRules {
     BuilderCodes public builderCodes;
 
     mapping(address => mapping(address => bool)) public approvedTransfers;
@@ -17,8 +17,8 @@ contract MockTransferAgent {
         approvedTransfers[from][to] = true;
     }
 
-    function transfer(address to, uint256 amount) public {
+    function transfer(address to, uint256 tokenId) public {
         if (!approvedTransfers[msg.sender][to]) revert();
-        builderCodes.transferFrom(msg.sender, to, amount);
+        builderCodes.transferFrom(msg.sender, to, tokenId);
     }
 }

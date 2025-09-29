@@ -39,11 +39,13 @@ contract UpdatePayoutAddressTest is BuilderCodesTest {
     /// @param codeSeed The seed for generating the code
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
-    function test_updatePayoutAddress_revert_zeroPayoutAddress(
+    function test_updatePayoutAddress_revert_unauthorized(
+        address sender,
         uint256 codeSeed,
         address initialOwner,
         address initialPayoutAddress
     ) public {
+        vm.assume(sender != initialOwner);
         initialOwner = _boundNonZeroAddress(initialOwner);
         initialPayoutAddress = _boundNonZeroAddress(initialPayoutAddress);
 
@@ -54,13 +56,41 @@ contract UpdatePayoutAddressTest is BuilderCodesTest {
         builderCodes.register(validCode, initialOwner, initialPayoutAddress);
 
         // Try to update with zero address - should revert with unauthorized first since msg.sender != owner
+        vm.prank(sender);
         vm.expectRevert(BuilderCodes.Unauthorized.selector);
         builderCodes.updatePayoutAddress(validCode, address(0));
 
-        // Now try as the actual owner with zero address
+        // Validate the payout address was not updated
+        assertEq(builderCodes.payoutAddress(validCode), initialPayoutAddress);
+    }
+
+    /// @notice Test that updatePayoutAddress reverts when the payout address is zero address
+    ///
+    /// @param codeSeed The seed for generating the code
+    /// @param initialOwner The initial owner address
+    /// @param initialPayoutAddress The initial payout address
+    function test_updatePayoutAddress_revert_zeroPayoutAddress(
+        uint256 codeSeed,
+        address initialOwner,
+        address initialPayoutAddress
+    ) public {
+        initialOwner = _boundNonZeroAddress(initialOwner);
+        vm.assume(initialOwner != address(this));
+        initialPayoutAddress = _boundNonZeroAddress(initialPayoutAddress);
+
+        string memory validCode = _generateValidCode(codeSeed);
+
+        // First register a code
+        vm.prank(registrar);
+        builderCodes.register(validCode, initialOwner, initialPayoutAddress);
+
+        // Try to update with zero address - should revert with zero address
         vm.prank(initialOwner);
         vm.expectRevert(BuilderCodes.ZeroAddress.selector);
         builderCodes.updatePayoutAddress(validCode, address(0));
+
+        // Validate the payout address was not updated
+        assertEq(builderCodes.payoutAddress(validCode), initialPayoutAddress);
     }
 
     /// @notice Test that updatePayoutAddress successfully updates the payout address
