@@ -36,7 +36,7 @@ contract BuilderCodes is
     /// @notice Role identifier for addresses authorized to call register or sign registrations
     bytes32 public constant REGISTER_ROLE = keccak256("REGISTER_ROLE");
 
-    /// @notice Role identifier for addresses authorized to transfer codes (while adhering to existing rules of being token owner or having approval)
+    /// @notice Role identifier for addresses authorized to transfer codes (still must own token or receive approval)
     bytes32 public constant TRANSFER_ROLE = keccak256("TRANSFER_ROLE");
 
     /// @notice Role identifier for addresses authorized to update metadata for one or all codes
@@ -159,7 +159,7 @@ contract BuilderCodes is
 
     /// @inheritdoc ERC721Upgradeable
     ///
-    /// @dev Enforces sender has TRANSFER_ROLE
+    /// @dev Requires sender has TRANSFER_ROLE
     /// @dev ERC721Upgradeable.safeTransferFrom inherits this function (and no other functions can initiate transfers)
     function transferFrom(address from, address to, uint256 tokenId) public override(ERC721Upgradeable, IERC721) {
         _checkRole(TRANSFER_ROLE, msg.sender);

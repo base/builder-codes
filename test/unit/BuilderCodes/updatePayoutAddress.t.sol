@@ -122,6 +122,8 @@ contract UpdatePayoutAddressTest is BuilderCodesTest {
 
         // Transfer the token to new owner
         uint256 tokenId = builderCodes.toTokenId(validCode);
+        vm.prank(owner);
+        builderCodes.grantRole(TRANSFER_ROLE, initialOwner);
         vm.prank(initialOwner);
         builderCodes.transferFrom(initialOwner, newOwner, tokenId);
 

@@ -41,6 +41,8 @@ contract BuilderCodesOperationsTest is BuilderCodesTest {
         assertEq(builderCodes.payoutAddress(code), payoutAddress);
 
         // Transfer the code to second owner
+        vm.prank(owner);
+        builderCodes.grantRole(TRANSFER_ROLE, initialOwner);
         vm.prank(initialOwner);
         builderCodes.transferFrom(initialOwner, secondOwner, tokenId);
 
