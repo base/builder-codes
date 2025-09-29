@@ -9,6 +9,41 @@ import {MockTransferAgent} from "../lib/mocks/MockTransferAgent.sol";
 
 /// @notice Integration tests for BuilderCodes transfers
 contract BuilderCodesTransfersTest is BuilderCodesTest {
+    function test_nonTransferableByDefault(address from, address to, uint256 codeSeed, address payoutAddress) public {
+        from = _boundNonZeroAddress(from);
+        to = _boundNonZeroAddress(to);
+        vm.assume(!builderCodes.hasRole(TRANSFER_ROLE, from));
+        vm.assume(from != to);
+        payoutAddress = _boundNonZeroAddress(payoutAddress);
+
+        string memory code = _generateValidCode(codeSeed);
+        uint256 tokenId = builderCodes.toTokenId(code);
+        vm.prank(owner);
+        builderCodes.register(code, from, payoutAddress);
+
+        // Attempt transfer from, safeTransferFrom, and safeTransferFrom with data
+        vm.startPrank(from);
+        vm.expectRevert(
+            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, from, TRANSFER_ROLE)
+        );
+
+        builderCodes.transferFrom(from, to, tokenId);
+        vm.expectRevert(
+            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, from, TRANSFER_ROLE)
+        );
+
+        builderCodes.safeTransferFrom(from, to, tokenId);
+        vm.expectRevert(
+            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, from, TRANSFER_ROLE)
+        );
+        builderCodes.safeTransferFrom(from, to, tokenId, bytes(""));
+
+        // Verify the token was not transferred
+        assertEq(builderCodes.ownerOf(tokenId), from);
+        assertEq(builderCodes.balanceOf(from), 1);
+        assertEq(builderCodes.balanceOf(to), 0);
+    }
+
     /// @notice Test that transferFrom succeeds when a token owner approves a transfer agent
     ///
     /// @param from The from address
