@@ -247,7 +247,7 @@ contract BuilderCodes is
     ///
     /// @return True if the address has the role
     function hasRole(bytes32 role, address account) public view override returns (bool) {
-        return account == owner() || super.hasRole(role, account);
+        return super.hasRole(role, account) || super.hasRole(getRoleAdmin(role), account) || account == owner();
     }
 
     /// @inheritdoc ERC721Upgradeable
