@@ -147,14 +147,10 @@ abstract contract BuilderCodesTest is Test {
     ) internal view returns (bytes memory signature) {
         bytes32 structHash = keccak256(
             abi.encode(
-                builderCodes.REGISTRATION_TYPEHASH(),
-                keccak256(bytes(code)),
-                initialOwner,
-                payoutAddress,
-                deadline
+                builderCodes.REGISTRATION_TYPEHASH(), keccak256(bytes(code)), initialOwner, payoutAddress, deadline
             )
         );
-        
+
         // Use the same approach as the contract - we need to compute the domain separator manually
         // since BuilderCodes doesn't expose it publicly. We'll use the EIP-712 standard format.
         bytes32 domainSeparator = keccak256(
@@ -166,15 +162,9 @@ abstract contract BuilderCodesTest is Test {
                 address(builderCodes)
             )
         );
-        
-        bytes32 digest = keccak256(
-            abi.encodePacked(
-                "\x19\x01",
-                domainSeparator,
-                structHash
-            )
-        );
-        
+
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
+
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(signerPk, digest);
         return abi.encodePacked(r, s, v);
     }

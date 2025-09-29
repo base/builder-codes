@@ -17,7 +17,7 @@ contract PayoutAddressTest is BuilderCodesTest {
         address initialPayoutAddress
     ) public {
         string memory code = _generateValidCode(codeSeed);
-        
+
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.Unregistered.selector, code));
         builderCodes.payoutAddress(code);
     }
@@ -26,10 +26,7 @@ contract PayoutAddressTest is BuilderCodesTest {
     ///
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
-    function test_payoutAddressString_revert_emptyCode(
-        address initialOwner,
-        address initialPayoutAddress
-    ) public {
+    function test_payoutAddressString_revert_emptyCode(address initialOwner, address initialPayoutAddress) public {
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, ""));
         builderCodes.payoutAddress("");
     }
@@ -45,7 +42,7 @@ contract PayoutAddressTest is BuilderCodesTest {
         address initialPayoutAddress
     ) public {
         string memory longCode = _generateLongCode(codeSeed);
-        
+
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, longCode));
         builderCodes.payoutAddress(longCode);
     }
@@ -61,7 +58,7 @@ contract PayoutAddressTest is BuilderCodesTest {
         address initialPayoutAddress
     ) public {
         string memory invalidCode = _generateInvalidCode(codeSeed);
-        
+
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, invalidCode));
         builderCodes.payoutAddress(invalidCode);
     }
@@ -79,7 +76,7 @@ contract PayoutAddressTest is BuilderCodesTest {
         // Generate a valid token ID but don't register it
         string memory code = _generateValidCode(tokenId);
         uint256 validTokenId = builderCodes.toTokenId(code);
-        
+
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.Unregistered.selector, code));
         builderCodes.payoutAddress(validTokenId);
     }
@@ -88,12 +85,9 @@ contract PayoutAddressTest is BuilderCodesTest {
     ///
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
-    function test_payoutAddressUint256_revert_emptyCode(
-        address initialOwner,
-        address initialPayoutAddress
-    ) public {
+    function test_payoutAddressUint256_revert_emptyCode(address initialOwner, address initialPayoutAddress) public {
         uint256 emptyTokenId = 0;
-        
+
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, ""));
         builderCodes.payoutAddress(emptyTokenId);
     }
@@ -110,7 +104,7 @@ contract PayoutAddressTest is BuilderCodesTest {
     ) public {
         // Use an invalid token ID that doesn't normalize properly
         uint256 invalidTokenId = _generateInvalidTokenId(tokenId);
-        
+
         // First determine what error toCode would throw for this invalid token ID
         try builderCodes.toCode(invalidTokenId) returns (string memory code) {
             // If toCode succeeds, then payoutAddress should revert with Unregistered
@@ -135,13 +129,13 @@ contract PayoutAddressTest is BuilderCodesTest {
     ) public {
         initialOwner = _boundNonZeroAddress(initialOwner);
         initialPayoutAddress = _boundNonZeroAddress(initialPayoutAddress);
-        
+
         string memory code = _generateValidCode(codeSeed);
-        
+
         // Register the code first
         vm.prank(registrar);
         builderCodes.register(code, initialOwner, initialPayoutAddress);
-        
+
         address retrievedAddress = builderCodes.payoutAddress(code);
         assertEq(retrievedAddress, initialPayoutAddress);
     }
@@ -158,14 +152,14 @@ contract PayoutAddressTest is BuilderCodesTest {
     ) public {
         initialOwner = _boundNonZeroAddress(initialOwner);
         initialPayoutAddress = _boundNonZeroAddress(initialPayoutAddress);
-        
+
         string memory code = _generateValidCode(codeSeed);
         uint256 tokenId = builderCodes.toTokenId(code);
-        
+
         // Register the code first
         vm.prank(registrar);
         builderCodes.register(code, initialOwner, initialPayoutAddress);
-        
+
         address retrievedAddress = builderCodes.payoutAddress(tokenId);
         assertEq(retrievedAddress, initialPayoutAddress);
     }
@@ -182,17 +176,17 @@ contract PayoutAddressTest is BuilderCodesTest {
     ) public {
         initialOwner = _boundNonZeroAddress(initialOwner);
         initialPayoutAddress = _boundNonZeroAddress(initialPayoutAddress);
-        
+
         string memory code = _generateValidCode(codeSeed);
         uint256 tokenId = builderCodes.toTokenId(code);
-        
+
         // Register the code first
         vm.prank(registrar);
         builderCodes.register(code, initialOwner, initialPayoutAddress);
-        
+
         address addressFromString = builderCodes.payoutAddress(code);
         address addressFromUint256 = builderCodes.payoutAddress(tokenId);
-        
+
         assertEq(addressFromString, addressFromUint256);
     }
 
@@ -212,20 +206,20 @@ contract PayoutAddressTest is BuilderCodesTest {
         initialPayoutAddress = _boundNonZeroAddress(initialPayoutAddress);
         newPayoutAddress = _boundNonZeroAddress(newPayoutAddress);
         vm.assume(initialPayoutAddress != newPayoutAddress);
-        
+
         string memory code = _generateValidCode(codeSeed);
-        
+
         // Register the code first
         vm.prank(registrar);
         builderCodes.register(code, initialOwner, initialPayoutAddress);
-        
+
         // Verify initial payout address
         assertEq(builderCodes.payoutAddress(code), initialPayoutAddress);
-        
+
         // Update payout address
         vm.prank(initialOwner);
         builderCodes.updatePayoutAddress(code, newPayoutAddress);
-        
+
         // Verify updated payout address
         assertEq(builderCodes.payoutAddress(code), newPayoutAddress);
     }

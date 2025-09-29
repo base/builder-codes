@@ -9,15 +9,13 @@ contract ConstructorTest is Test {
     /// @notice Test that constructor disables initializers on implementation contract
     ///
     /// @param owner Fuzzed owner address
-    /// @param registrar Fuzzed registrar address  
+    /// @param registrar Fuzzed registrar address
     /// @param uriPrefix Fuzzed URI prefix
-    function test_constructor_success_disablesInitializers(
-        address owner,
-        address registrar,
-        string memory uriPrefix
-    ) public {
+    function test_constructor_success_disablesInitializers(address owner, address registrar, string memory uriPrefix)
+        public
+    {
         BuilderCodes implementation = new BuilderCodes();
-        
+
         vm.expectRevert(Initializable.InvalidInitialization.selector);
         implementation.initialize(owner, registrar, uriPrefix);
     }

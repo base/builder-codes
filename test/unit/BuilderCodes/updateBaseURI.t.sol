@@ -18,6 +18,7 @@ contract UpdateBaseURITest is BuilderCodesTest {
     /// @param uriPrefix The URI prefix to test
 
     function test_updateBaseURI_revert_senderInvalidRole(address sender, string memory uriPrefix) public {
+        vm.assume(!builderCodes.hasRole(builderCodes.METADATA_ROLE(), sender));
         vm.startPrank(sender);
         vm.expectRevert(
             abi.encodeWithSelector(
