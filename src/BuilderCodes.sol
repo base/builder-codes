@@ -96,8 +96,8 @@ contract BuilderCodes is
     /// @notice Initializes the contract (replaces constructor)
     ///
     /// @param initialOwner Address that will own the contract
-    /// @param initialRegistrar Address to grant REGISTER_ROLE (can be address(0) to skip)
-    function initialize(address initialOwner, address initialRegistrar, string memory uriPrefix) external initializer {
+    /// @param initialAdmin Address to grant REGISTER_ROLE (can be address(0) to skip)
+    function initialize(address initialOwner, address initialAdmin, string memory uriPrefix) external initializer {
         if (initialOwner == address(0)) revert ZeroAddress();
 
         __AccessControl_init();
@@ -107,7 +107,7 @@ contract BuilderCodes is
         __UUPSUpgradeable_init();
         _getRegistryStorage().uriPrefix = uriPrefix;
 
-        if (initialRegistrar != address(0)) _grantRole(REGISTER_ROLE, initialRegistrar);
+        if (initialAdmin != address(0)) _grantRole(DEFAULT_ADMIN_ROLE, initialAdmin);
     }
 
     /// @notice Registers a new referral code in the system with a custom value
