@@ -11,7 +11,7 @@ remappings=[
     "solady/=lib/solady/src/"
 ]
 
-[profile.deploy]
+[profile.production]
 optimizer = true
 optimizer_runs = 100000
 
