@@ -12,7 +12,7 @@ contract DeployBuilderCodes is Script {
     function run() external returns (address) {
         address owner = 0x1D8958f7b9AE9FbB9d78C1e1aB18b44Fd54a0B7A; // testnet key
         address initialRegistrar = 0x6Bd08aCF2f8839eAa8a2443601F2DeED892cd389; // dev registrar key
-        string memory uriPrefix = "https://flywheel.com/";
+        string memory uriPrefix = "https://api-spindl.coinbase.com/flywheel/metadata/nft/";
 
         console.log("Initial registrar:", initialRegistrar);
         console.log("URI Prefix:", uriPrefix);
