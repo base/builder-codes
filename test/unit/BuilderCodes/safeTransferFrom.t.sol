@@ -22,8 +22,9 @@ contract SafeTransferFromTest is BuilderCodesTest {
     ) public {
         from = _boundNonZeroAddress(from);
         to = _boundNonZeroAddress(to);
-        vm.assume(from != owner);
         vm.assume(from != to);
+        vm.assume(!builderCodes.hasRole(TRANSFER_ROLE, from));
+        vm.assume(!builderCodes.hasRole(TRANSFER_ROLE, to));
         payoutAddress = _boundNonZeroAddress(payoutAddress);
 
         // Register the code
@@ -59,8 +60,9 @@ contract SafeTransferFromTest is BuilderCodesTest {
     ) public {
         from = _boundNonZeroAddress(from);
         to = _boundNonZeroAddress(to);
-        vm.assume(from != owner);
         vm.assume(from != to);
+        vm.assume(!builderCodes.hasRole(TRANSFER_ROLE, from));
+        vm.assume(!builderCodes.hasRole(TRANSFER_ROLE, to));
         payoutAddress = _boundNonZeroAddress(payoutAddress);
 
         // Register the code
@@ -102,8 +104,9 @@ contract SafeTransferFromTest is BuilderCodesTest {
     ) public {
         from = _boundNonZeroAddress(from);
         to = _boundNonZeroAddress(to);
-        vm.assume(from != owner);
         vm.assume(from != to);
+        vm.assume(!builderCodes.hasRole(TRANSFER_ROLE, from));
+        vm.assume(!builderCodes.hasRole(TRANSFER_ROLE, to));
         payoutAddress = _boundNonZeroAddress(payoutAddress);
 
         // Register the code
@@ -141,8 +144,9 @@ contract SafeTransferFromTest is BuilderCodesTest {
     ) public {
         from = _boundNonZeroAddress(from);
         to = _boundNonZeroAddress(to);
-        vm.assume(from != owner);
         vm.assume(from != to);
+        vm.assume(!builderCodes.hasRole(TRANSFER_ROLE, from));
+        vm.assume(!builderCodes.hasRole(TRANSFER_ROLE, to));
         payoutAddress = _boundNonZeroAddress(payoutAddress);
 
         // Register the code
