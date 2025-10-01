@@ -313,11 +313,9 @@ contract BuilderCodes is
         // Shift nonzero bytes left so low-endian bits are zero, matching LibString's expectation to trim `\0` bytes
         uint256 leadingZeroBytes = LibBit.clz(tokenId) / 8; // "clz" = count leading zeros
         bytes32 smallString = bytes32(tokenId << leadingZeroBytes * 8);
-        code = LibString.fromSmallString(smallString);
-
         if (smallString != LibString.normalizeSmallString(smallString)) revert InvalidTokenId(tokenId);
+        code = LibString.fromSmallString(smallString);
         if (!isValidCode(code)) revert InvalidCode(code);
-        return code;
     }
 
     /// @notice Disabled to prevent accidental ownership renunciation
