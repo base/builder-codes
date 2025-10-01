@@ -297,7 +297,11 @@ contract BuilderCodes is
     /// @return tokenId The token ID for the referral code
     function toTokenId(string memory code) public pure returns (uint256 tokenId) {
         if (!isValidCode(code)) revert InvalidCode(code);
-        tokenId = uint256(LibString.toSmallString(code));
+
+        // LibString left-shifts content, so we need to right-shift it to the end
+        // The content takes `length` bytes, so shift right by (32 - length) * 8 bits
+        bytes32 smallString = LibString.toSmallString(code);
+        return uint256(smallString) >> ((32 - bytes(code).length) * 8);
     }
 
     /// @notice Converts a token ID to a referral code
