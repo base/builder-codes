@@ -297,7 +297,7 @@ contract BuilderCodes is
     /// @return tokenId The token ID for the referral code
     function toTokenId(string memory code) public pure returns (uint256 tokenId) {
         if (!isValidCode(code)) revert InvalidCode(code);
-        return uint256(LibString.toSmallString(code));
+        tokenId = uint256(LibString.toSmallString(code));
     }
 
     /// @notice Converts a token ID to a referral code
@@ -306,10 +306,10 @@ contract BuilderCodes is
     ///
     /// @return code The referral code for the token ID
     function toCode(uint256 tokenId) public pure returns (string memory code) {
-        code = LibString.fromSmallString(bytes32(tokenId));
-        if (bytes32(tokenId) != LibString.normalizeSmallString(bytes32(tokenId))) revert InvalidTokenId(tokenId);
+        bytes32 smallString = bytes32(tokenId);
+        if (smallString != LibString.normalizeSmallString(smallString)) revert InvalidTokenId(tokenId);
+        code = LibString.fromSmallString(smallString);
         if (!isValidCode(code)) revert InvalidCode(code);
-        return code;
     }
 
     /// @notice Disabled to prevent accidental ownership renunciation
