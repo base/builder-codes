@@ -12,7 +12,6 @@ import {LibString} from "solady/utils/LibString.sol";
 import {LibBit} from "solady/utils/LibBit.sol";
 import {EIP712} from "solady/utils/EIP712.sol";
 import {SignatureCheckerLib} from "solady/utils/SignatureCheckerLib.sol";
-import {console} from "forge-std/console.sol";
 
 /// @notice Registry for builder codes
 ///
@@ -311,14 +310,14 @@ contract BuilderCodes is
     ///
     /// @return code The referral code for the token ID
     function toCode(uint256 tokenId) public pure returns (string memory code) {
-        // Shift nonzero bytes left so low-endian bits are zero, matching LibString's expectation to trim `\0` characters
+        // Shift nonzero bytes left so low-endian bits are zero, matching LibString's expectation to trim `\0` bytes
         uint256 leadingZeroBytes = LibBit.clz(tokenId) / 8; // "clz" = count leading zeros
         code = LibString.fromSmallString(bytes32(tokenId << leadingZeroBytes * 8));
 
-        // Check tokenId is reflexive, only broken if maliciously uses intermixed zero-bytes
+        // Check tokenId is reflexive, only broken if maliciously uses intermixed zero bytes
         if (toTokenId(code) != tokenId) revert InvalidTokenId(tokenId);
 
-        // Check code nonzero and only has valid characters
+        // Check code is nonzero and only has allowed characters
         if (!isValidCode(code)) revert InvalidCode(code);
         return code;
     }
