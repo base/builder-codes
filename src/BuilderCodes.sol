@@ -312,12 +312,10 @@ contract BuilderCodes is
     function toCode(uint256 tokenId) public pure returns (string memory code) {
         // Shift nonzero bytes left so low-endian bits are zero, matching LibString's expectation to trim `\0` bytes
         uint256 leadingZeroBytes = LibBit.clz(tokenId) / 8; // "clz" = count leading zeros
-        code = LibString.fromSmallString(bytes32(tokenId << leadingZeroBytes * 8));
+        bytes32 smallString = bytes32(tokenId << leadingZeroBytes * 8);
+        code = LibString.fromSmallString(smallString);
 
-        // Check tokenId is reflexive, only broken if maliciously uses intermixed zero bytes
-        if (toTokenId(code) != tokenId) revert InvalidTokenId(tokenId);
-
-        // Check code is nonzero and only has allowed characters
+        if (smallString != LibString.normalizeSmallString(smallString)) revert InvalidTokenId(tokenId);
         if (!isValidCode(code)) revert InvalidCode(code);
         return code;
     }
