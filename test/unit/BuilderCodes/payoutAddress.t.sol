@@ -104,7 +104,7 @@ contract PayoutAddressTest is BuilderCodesTest {
     ) public {
         // Use an invalid token ID that doesn't normalize properly
         string memory invalidCode = _generateInvalidCode(codeSeed);
-        uint256 invalidTokenId = uint256(bytes32(bytes(invalidCode)));
+        uint256 invalidTokenId = uint256(bytes32(bytes(invalidCode))) >> ((32 - bytes(invalidCode).length) * 8);
 
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, invalidCode));
         builderCodes.payoutAddress(invalidTokenId);

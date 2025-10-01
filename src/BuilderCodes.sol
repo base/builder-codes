@@ -9,6 +9,7 @@ import {UUPSUpgradeable} from "openzeppelin-contracts-upgradeable/proxy/utils/UU
 import {IERC4906} from "openzeppelin-contracts/interfaces/IERC4906.sol";
 import {IERC165} from "openzeppelin-contracts/interfaces/IERC165.sol";
 import {LibString} from "solady/utils/LibString.sol";
+import {LibBit} from "solady/utils/LibBit.sol";
 import {EIP712} from "solady/utils/EIP712.sol";
 import {SignatureCheckerLib} from "solady/utils/SignatureCheckerLib.sol";
 
@@ -297,7 +298,10 @@ contract BuilderCodes is
     /// @return tokenId The token ID for the referral code
     function toTokenId(string memory code) public pure returns (uint256 tokenId) {
         if (!isValidCode(code)) revert InvalidCode(code);
-        tokenId = uint256(LibString.toSmallString(code));
+
+        // Shift nonzero bytes right so high-endian bits are zero, undoing left-shift from bytes->bytes32 cast
+        uint256 trailingZeroBytes = 32 - bytes(code).length;
+        tokenId = uint256(bytes32(bytes(code))) >> trailingZeroBytes * 8;
     }
 
     /// @notice Converts a token ID to a referral code
@@ -306,7 +310,9 @@ contract BuilderCodes is
     ///
     /// @return code The referral code for the token ID
     function toCode(uint256 tokenId) public pure returns (string memory code) {
-        bytes32 smallString = bytes32(tokenId);
+        // Shift nonzero bytes left so low-endian bits are zero, matching LibString's expectation to trim `\0` bytes
+        uint256 leadingZeroBytes = LibBit.clz(tokenId) / 8; // "clz" = count leading zeros
+        bytes32 smallString = bytes32(tokenId << leadingZeroBytes * 8);
         if (smallString != LibString.normalizeSmallString(smallString)) revert InvalidTokenId(tokenId);
         code = LibString.fromSmallString(smallString);
         if (!isValidCode(code)) revert InvalidCode(code);
