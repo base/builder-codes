@@ -94,27 +94,20 @@ contract PayoutAddressTest is BuilderCodesTest {
 
     /// @notice Test that payoutAddress(uint256) reverts when token ID represents code with invalid characters
     ///
-    /// @param tokenId The token ID representing invalid code
+    /// @param codeSeed The token ID representing invalid code
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
     function test_payoutAddressUint256_revert_codeContainsInvalidCharacters(
-        uint256 tokenId,
+        uint256 codeSeed,
         address initialOwner,
         address initialPayoutAddress
     ) public {
         // Use an invalid token ID that doesn't normalize properly
-        uint256 invalidTokenId = _generateInvalidTokenId(tokenId);
+        string memory invalidCode = _generateInvalidCode(codeSeed);
+        uint256 invalidTokenId = uint256(bytes32(bytes(invalidCode)));
 
-        // First determine what error toCode would throw for this invalid token ID
-        try builderCodes.toCode(invalidTokenId) returns (string memory code) {
-            // If toCode succeeds, then payoutAddress should revert with Unregistered
-            vm.expectRevert(abi.encodeWithSelector(BuilderCodes.Unregistered.selector, code));
-            builderCodes.payoutAddress(invalidTokenId);
-        } catch (bytes memory reason) {
-            // If toCode fails, payoutAddress should fail with the same error
-            vm.expectRevert(reason);
-            builderCodes.payoutAddress(invalidTokenId);
-        }
+        vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, invalidCode));
+        builderCodes.payoutAddress(invalidTokenId);
     }
 
     /// @notice Test that payoutAddress(string) returns correct address for registered code

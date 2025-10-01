@@ -85,6 +85,9 @@ contract BuilderCodes is
     /// @notice Thrown when builder code is invalid
     error InvalidCode(string code);
 
+    /// @notice Thrown when token ID is invalid
+    error InvalidTokenId(uint256 tokenId);
+
     /// @notice Thrown when builder code is not registered
     error Unregistered(string code);
 
@@ -304,7 +307,7 @@ contract BuilderCodes is
     /// @return code The referral code for the token ID
     function toCode(uint256 tokenId) public pure returns (string memory code) {
         code = LibString.fromSmallString(bytes32(tokenId));
-        if (bytes32(tokenId) != LibString.normalizeSmallString(bytes32(tokenId))) revert InvalidCode(code);
+        if (bytes32(tokenId) != LibString.normalizeSmallString(bytes32(tokenId))) revert InvalidTokenId(tokenId);
         if (!isValidCode(code)) revert InvalidCode(code);
         return code;
     }
