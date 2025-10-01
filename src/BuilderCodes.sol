@@ -9,8 +9,10 @@ import {UUPSUpgradeable} from "openzeppelin-contracts-upgradeable/proxy/utils/UU
 import {IERC4906} from "openzeppelin-contracts/interfaces/IERC4906.sol";
 import {IERC165} from "openzeppelin-contracts/interfaces/IERC165.sol";
 import {LibString} from "solady/utils/LibString.sol";
+import {LibBit} from "solady/utils/LibBit.sol";
 import {EIP712} from "solady/utils/EIP712.sol";
 import {SignatureCheckerLib} from "solady/utils/SignatureCheckerLib.sol";
+import {console} from "forge-std/console.sol";
 
 /// @notice Registry for builder codes
 ///
@@ -298,10 +300,9 @@ contract BuilderCodes is
     function toTokenId(string memory code) public pure returns (uint256 tokenId) {
         if (!isValidCode(code)) revert InvalidCode(code);
 
-        // LibString left-shifts content, so we need to right-shift it to the end
-        // The content takes `length` bytes, so shift right by (32 - length) * 8 bits
-        bytes32 smallString = LibString.toSmallString(code);
-        return uint256(smallString) >> ((32 - bytes(code).length) * 8);
+        // Shift nonzero bytes right so high-endian bits are zero, undoing left-shift from bytes->bytes32 cast
+        uint256 trailingZeroBytes = 32 - bytes(code).length;
+        tokenId = uint256(bytes32(bytes(code))) >> trailingZeroBytes * 8;
     }
 
     /// @notice Converts a token ID to a referral code
@@ -310,10 +311,16 @@ contract BuilderCodes is
     ///
     /// @return code The referral code for the token ID
     function toCode(uint256 tokenId) public pure returns (string memory code) {
-        bytes32 smallString = bytes32(tokenId);
-        if (smallString != LibString.normalizeSmallString(smallString)) revert InvalidTokenId(tokenId);
-        code = LibString.fromSmallString(smallString);
+        // Shift nonzero bytes left so low-endian bits are zero, matching LibString's expectation to trim `\0` characters
+        uint256 leadingZeroBytes = LibBit.clz(tokenId) / 8; // "clz" = count leading zeros
+        code = LibString.fromSmallString(bytes32(tokenId << leadingZeroBytes * 8));
+
+        // Check tokenId is reflexive, only broken if maliciously uses intermixed zero-bytes
+        if (toTokenId(code) != tokenId) revert InvalidTokenId(tokenId);
+
+        // Check code nonzero and only has valid characters
         if (!isValidCode(code)) revert InvalidCode(code);
+        return code;
     }
 
     /// @notice Disabled to prevent accidental ownership renunciation
