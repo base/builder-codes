@@ -30,7 +30,7 @@ contract ToCodeTest is BuilderCodesTest {
     ) public {
         // Use a token ID that would convert to invalid characters
         string memory invalidCode = _generateInvalidCode(tokenId);
-        uint256 invalidTokenId = uint256(bytes32(bytes(invalidCode)));
+        uint256 invalidTokenId = uint256(bytes32(bytes(invalidCode))) >> ((32 - bytes(invalidCode).length) * 8);
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, invalidCode));
         builderCodes.toCode(invalidTokenId);
     }
@@ -47,10 +47,11 @@ contract ToCodeTest is BuilderCodesTest {
         uint256 seed,
         uint8 zeroCharacter
     ) public {
+        vm.assume(zeroCharacter > 0);
         string memory validCode = _generateValidCode(seed);
         vm.assume(bytes(validCode).length - 1 > zeroCharacter);
         uint256 validTokenId = builderCodes.toTokenId(validCode);
-        uint256 invalidTokenId = validTokenId & (~(uint256(0xFF) << (8 * (31 - zeroCharacter))));
+        uint256 invalidTokenId = validTokenId & (~(uint256(0xFF) << (8 * zeroCharacter)));
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidTokenId.selector, invalidTokenId));
         builderCodes.toCode(invalidTokenId);
     }
