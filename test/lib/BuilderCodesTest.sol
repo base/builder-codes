@@ -40,7 +40,7 @@ abstract contract BuilderCodesTest is Test {
     /// @param seed Random number to seed the valid code generation
     ///
     /// @return code Valid code
-    function _generateValidCode(uint256 seed) internal returns (string memory code) {
+    function _generateValidCode(uint256 seed) internal view returns (string memory code) {
         bytes memory allowedCharacters = bytes(builderCodes.ALLOWED_CHARACTERS());
         uint256 divisor = allowedCharacters.length;
         uint256 maxLength = 32;
@@ -71,13 +71,20 @@ abstract contract BuilderCodesTest is Test {
     function _generateInvalidCode(uint256 seed) internal pure returns (string memory code) {
         bytes memory invalidCharacters = bytes("!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         uint256 divisor = invalidCharacters.length;
-        uint256 len = bound(seed % 100, 1, 32);
-        bytes memory codeBytes = new bytes(len);
+        uint256 maxLength = 32;
+        bytes memory codeBytes = new bytes(maxLength);
+        uint256 codeLength = 0;
 
-        for (uint256 i; i < len; i++) {
+        for (uint256 i; i < maxLength; i++) {
+            codeLength++;
             codeBytes[i] = invalidCharacters[seed % divisor];
             seed /= divisor;
-            if (seed == 0) seed = 1; // Ensure we don't hit zero
+            if (seed == 0) break;
+        }
+
+        // Resize codeBytes to actual output length
+        assembly {
+            mstore(codeBytes, codeLength)
         }
 
         return string(codeBytes);
@@ -101,19 +108,6 @@ abstract contract BuilderCodesTest is Test {
         }
 
         return string(codeBytes);
-    }
-
-    /// @notice Generates token ID that doesn't normalize properly (has embedded null bytes)
-    ///
-    /// @param seed Random number to seed the invalid token ID generation
-    ///
-    /// @return tokenId Invalid token ID that fails normalization
-    function _generateInvalidTokenId(uint256 seed) internal pure returns (uint256 tokenId) {
-        // Create a bytes32 with null bytes in the middle
-        bytes32 invalidBytes = bytes32(seed);
-        // Force some null bytes in positions that would break normalization
-        invalidBytes = invalidBytes & 0xFFFF00000000FFFF00000000FFFF00000000FFFF00000000FFFF00000000FFFF;
-        return uint256(invalidBytes);
     }
 
     /// @notice Bounds address to non-zero value for fuzz testing

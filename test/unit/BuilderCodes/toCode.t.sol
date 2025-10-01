@@ -37,20 +37,21 @@ contract ToCodeTest is BuilderCodesTest {
 
     /// @notice Test that toCode reverts when token ID does not normalize properly
     ///
-    /// @param tokenId The token ID with invalid normalization
     /// @param initialOwner The initial owner address
     /// @param initialPayoutAddress The initial payout address
+    /// @param seed The seed for generating the valid code
+    /// @param zeroCharacter The character position to zero out
     function test_toCode_revert_invalidNormalization(
-        uint256 tokenId,
         address initialOwner,
-        address initialPayoutAddress
+        address initialPayoutAddress,
+        uint256 seed,
+        uint8 zeroCharacter
     ) public {
-        uint256 invalidTokenId = _generateInvalidTokenId(tokenId);
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                BuilderCodes.InvalidCode.selector, LibString.fromSmallString(bytes32(invalidTokenId))
-            )
-        );
+        string memory validCode = _generateValidCode(seed);
+        vm.assume(bytes(validCode).length - 1 > zeroCharacter);
+        uint256 validTokenId = builderCodes.toTokenId(validCode);
+        uint256 invalidTokenId = validTokenId & (~(uint256(0xFF) << (8 * (31 - zeroCharacter))));
+        vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidTokenId.selector, invalidTokenId));
         builderCodes.toCode(invalidTokenId);
     }
 
