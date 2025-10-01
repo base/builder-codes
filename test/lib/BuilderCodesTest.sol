@@ -41,26 +41,9 @@ abstract contract BuilderCodesTest is Test {
     ///
     /// @return code Valid code
     function _generateValidCode(uint256 seed) internal view returns (string memory code) {
-        bytes memory allowedCharacters = bytes(builderCodes.ALLOWED_CHARACTERS());
-        uint256 divisor = allowedCharacters.length;
-        uint256 maxLength = 32;
-        bytes memory codeBytes = new bytes(maxLength);
-        uint256 codeLength = 0;
-
-        // Iteratively generate code with modulo arithmetic on pseudo-random hash
-        for (uint256 i; i < maxLength; i++) {
-            codeLength++;
-            codeBytes[i] = allowedCharacters[seed % divisor];
-            seed /= divisor;
-            if (seed == 0) break;
-        }
-
-        // Resize codeBytes to actual output length
-        assembly {
-            mstore(codeBytes, codeLength)
-        }
-
-        return string(codeBytes);
+        uint256 length = seed % 32 + 1; // 1-32 characters
+        string memory allowedCharacters = builderCodes.ALLOWED_CHARACTERS();
+        return _generateCode(seed, length, allowedCharacters);
     }
 
     /// @notice Generates invalid code with disallowed characters
@@ -69,25 +52,9 @@ abstract contract BuilderCodesTest is Test {
     ///
     /// @return code Invalid code containing disallowed characters
     function _generateInvalidCode(uint256 seed) internal pure returns (string memory code) {
-        bytes memory invalidCharacters = bytes("!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-        uint256 divisor = invalidCharacters.length;
-        uint256 maxLength = 32;
-        bytes memory codeBytes = new bytes(maxLength);
-        uint256 codeLength = 0;
-
-        for (uint256 i; i < maxLength; i++) {
-            codeLength++;
-            codeBytes[i] = invalidCharacters[seed % divisor];
-            seed /= divisor;
-            if (seed == 0) break;
-        }
-
-        // Resize codeBytes to actual output length
-        assembly {
-            mstore(codeBytes, codeLength)
-        }
-
-        return string(codeBytes);
+        uint256 length = seed % 32 + 1; // 1-32 characters
+        string memory invalidCharacters = "!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        return _generateCode(seed, length, invalidCharacters);
     }
 
     /// @notice Generates code over 32 characters
@@ -96,15 +63,25 @@ abstract contract BuilderCodesTest is Test {
     ///
     /// @return code Code over 32 characters long
     function _generateLongCode(uint256 seed) internal pure returns (string memory code) {
-        bytes memory allowedCharacters = bytes("0123456789abcdefghijklmnopqrstuvwxyz_");
-        uint256 divisor = allowedCharacters.length;
-        uint256 len = bound(seed % 100, 33, 100); // 33-100 characters
-        bytes memory codeBytes = new bytes(len);
+        uint256 length = seed % 32 + 33; // 33-64 characters
+        string memory allowedCharacters = "0123456789abcdefghijklmnopqrstuvwxyz_";
+        return _generateCode(seed, length, allowedCharacters);
+    }
 
-        for (uint256 i; i < len; i++) {
-            codeBytes[i] = allowedCharacters[seed % divisor];
-            seed /= divisor;
-            if (seed == 0) seed = 1;
+    function _generateCode(uint256 seed, uint256 length, string memory characters)
+        internal
+        pure
+        returns (string memory code)
+    {
+        bytes memory charactersBytes = bytes(characters);
+        uint256 divisor = charactersBytes.length;
+        bytes memory codeBytes = new bytes(length);
+
+        uint256 tmpSeed = seed;
+        for (uint256 i; i < length; i++) {
+            codeBytes[i] = charactersBytes[tmpSeed % divisor];
+            tmpSeed /= divisor;
+            if (tmpSeed == 0) tmpSeed = seed;
         }
 
         return string(codeBytes);
