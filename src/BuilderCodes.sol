@@ -192,12 +192,12 @@ contract BuilderCodes is
     /// @notice Updates the default payout address for a referral code
     ///
     /// @param code Builder code
-    /// @param initialPayoutAddress New default payout address
+    /// @param newPayoutAddress New default payout address
     /// @dev Only callable by referral code owner
-    function updatePayoutAddress(string memory code, address initialPayoutAddress) external {
+    function updatePayoutAddress(string memory code, address newPayoutAddress) external {
         uint256 tokenId = toTokenId(code);
         if (_requireOwned(tokenId) != msg.sender) revert Unauthorized();
-        _updatePayoutAddress(tokenId, initialPayoutAddress);
+        _updatePayoutAddress(tokenId, newPayoutAddress);
     }
 
     /// @notice Gets the default payout address for a referral code
