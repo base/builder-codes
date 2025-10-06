@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-import {BuilderCodesTest, IERC721Errors} from "../../lib/BuilderCodesTest.sol";
 import {BuilderCodes} from "../../../src/BuilderCodes.sol";
+import {BuilderCodesTest, IERC721Errors} from "../../lib/BuilderCodesTest.sol";
 
 /// @notice Unit tests for BuilderCodes.tokenURI
 contract TokenURITest is BuilderCodesTest {

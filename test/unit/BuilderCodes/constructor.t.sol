@@ -2,6 +2,7 @@
 pragma solidity ^0.8.29;
 
 import {Test} from "forge-std/Test.sol";
+
 import {BuilderCodes, Initializable} from "../../../src/BuilderCodes.sol";
 
 /// @notice Unit tests for BuilderCodes constructor

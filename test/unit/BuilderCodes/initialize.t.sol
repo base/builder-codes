@@ -135,10 +135,7 @@ contract InitializeTest is BuilderCodesTest {
 
         // Verify URI prefix by checking contractURI format
         string memory contractURI = freshContract.contractURI();
-        if (bytes(uriPrefix).length > 0) {
-            assertEq(contractURI, string.concat(uriPrefix, "contractURI.json"));
-        } else {
-            assertEq(contractURI, "");
-        }
+        if (bytes(uriPrefix).length > 0) assertEq(contractURI, string.concat(uriPrefix, "contractURI.json"));
+        else assertEq(contractURI, "");
     }
 }
