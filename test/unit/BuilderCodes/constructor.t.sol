@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-import {BuilderCodes, Initializable} from "../../../src/BuilderCodes.sol";
 import {Test} from "forge-std/Test.sol";
+
+import {BuilderCodes, Initializable} from "../../../src/BuilderCodes.sol";
 
 /// @notice Unit tests for BuilderCodes constructor
 contract ConstructorTest is Test {

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-import {BuilderCodesTest} from "../lib/BuilderCodesTest.sol";
-
 import {IAccessControl} from "@openzeppelin/contracts/access/IAccessControl.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+
+import {BuilderCodesTest} from "../lib/BuilderCodesTest.sol";
 
 /// @notice Integration tests for BuilderCodes operations
 contract BuilderCodesAdminOperationsTest is BuilderCodesTest {
