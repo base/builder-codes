@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-import {LibString} from "solady/utils/LibString.sol";
-
 import {BuilderCodesTest} from "../../lib/BuilderCodesTest.sol";
 import {BuilderCodes} from "../../../src/BuilderCodes.sol";
 
@@ -10,9 +8,7 @@ import {BuilderCodes} from "../../../src/BuilderCodes.sol";
 contract ToCodeTest is BuilderCodesTest {
     /// @notice Test that toCode reverts when token ID represents empty code
     ///
-    /// @param initialOwner The initial owner address
-    /// @param initialPayoutAddress The initial payout address
-    function test_toCode_revert_emptyCode(address initialOwner, address initialPayoutAddress) public {
+    function test_toCode_revert_emptyCode() public {
         uint256 emptyTokenId = 0;
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, ""));
         builderCodes.toCode(emptyTokenId);
@@ -21,13 +17,7 @@ contract ToCodeTest is BuilderCodesTest {
     /// @notice Test that toCode reverts when token ID represents code with invalid characters
     ///
     /// @param tokenId The token ID representing invalid code
-    /// @param initialOwner The initial owner address
-    /// @param initialPayoutAddress The initial payout address
-    function test_toCode_revert_codeContainsInvalidCharacters(
-        uint256 tokenId,
-        address initialOwner,
-        address initialPayoutAddress
-    ) public {
+    function test_toCode_revert_codeContainsInvalidCharacters(uint256 tokenId) public {
         // Use a token ID that would convert to invalid characters
         string memory invalidCode = _generateInvalidCode(tokenId);
         uint256 invalidTokenId = uint256(bytes32(bytes(invalidCode))) >> ((32 - bytes(invalidCode).length) * 8);
@@ -37,16 +27,9 @@ contract ToCodeTest is BuilderCodesTest {
 
     /// @notice Test that toCode reverts when token ID does not normalize properly
     ///
-    /// @param initialOwner The initial owner address
-    /// @param initialPayoutAddress The initial payout address
     /// @param seed The seed for generating the valid code
     /// @param zeroCharacter The character position to zero out
-    function test_toCode_revert_invalidNormalization(
-        address initialOwner,
-        address initialPayoutAddress,
-        uint256 seed,
-        uint8 zeroCharacter
-    ) public {
+    function test_toCode_revert_invalidNormalization(uint256 seed, uint8 zeroCharacter) public {
         vm.assume(zeroCharacter > 0);
         string memory validCode = _generateValidCode(seed);
         vm.assume(bytes(validCode).length - 1 > zeroCharacter);
@@ -59,13 +42,7 @@ contract ToCodeTest is BuilderCodesTest {
     /// @notice Test that toCode returns correct code for valid token ID
     ///
     /// @param codeSeed The seed for generating the code
-    /// @param initialOwner The initial owner address
-    /// @param initialPayoutAddress The initial payout address
-    function test_toCode_success_returnsCorrectCode(
-        uint256 codeSeed,
-        address initialOwner,
-        address initialPayoutAddress
-    ) public {
+    function test_toCode_success_returnsCorrectCode(uint256 codeSeed) public view {
         string memory validCode = _generateValidCode(codeSeed);
         uint256 tokenId = builderCodes.toTokenId(validCode);
 

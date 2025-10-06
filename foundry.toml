@@ -18,3 +18,13 @@ optimizer_runs = 100000
 # Generate skimmable test docs with command: make docs-test
 [profile.testdocs]
 src = "test"
+
+[lint]
+lint_on_build = false
+exclude_lints = [
+    "mixed-case-variable", # *URI variable names
+    "mixed-case-function", # *URI function names
+    "asm-keccak256", # EIP-712 hashing
+    "erc20-unchecked-transfer", # Warning on ERC-721 transferFrom
+    "unused-import" # BuilderCodesTest imports for purpose of dependent tests
+]

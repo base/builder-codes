@@ -2,7 +2,6 @@
 pragma solidity ^0.8.29;
 
 import {BuilderCodesTest, IERC721Errors} from "../../lib/BuilderCodesTest.sol";
-import {BuilderCodes} from "../../../src/BuilderCodes.sol";
 
 /// @notice Unit tests for BuilderCodes.updateMetadata
 contract UpdateMetadataTest is BuilderCodesTest {

@@ -9,11 +9,7 @@ contract TokenURITest is BuilderCodesTest {
     /// @notice Test that tokenURI reverts when token ID does not exist
     ///
     /// @param tokenId The token ID
-    /// @param initialOwner The initial owner address
-    /// @param initialPayoutAddress The initial payout address
-    function test_tokenURI_revert_tokenDoesNotExist(uint256 tokenId, address initialOwner, address initialPayoutAddress)
-        public
-    {
+    function test_tokenURI_revert_tokenDoesNotExist(uint256 tokenId) public {
         // Ensure the token ID is not registered by trying a random high value
         tokenId = bound(tokenId, type(uint128).max, type(uint256).max);
 

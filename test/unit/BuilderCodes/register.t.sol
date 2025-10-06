@@ -129,7 +129,6 @@ contract RegisterTest is BuilderCodesTest {
         payoutAddress = _boundNonZeroAddress(payoutAddress);
 
         string memory code = _generateValidCode(codeSeed);
-        uint256 tokenId = builderCodes.toTokenId(code);
 
         // Register the code first
         vm.prank(registrar);

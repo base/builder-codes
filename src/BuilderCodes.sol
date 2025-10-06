@@ -68,7 +68,7 @@ contract BuilderCodes is
     /// @notice Emitted when a publisher's default payout address is updated
     ///
     /// @param tokenId Token ID of the referral code
-    /// @param payoutAddress New default payout address for all chains
+    /// @param payoutAddress New default payout address
     event PayoutAddressUpdated(uint256 indexed tokenId, address payoutAddress);
 
     /// @notice Emits when the contract URI is updated (ERC-7572)
@@ -121,26 +121,26 @@ contract BuilderCodes is
     ///
     /// @param code Custom builder code for the builder code
     /// @param initialOwner Owner of the builder code
-    /// @param payoutAddress Default payout address for all chains
-    function register(string memory code, address initialOwner, address payoutAddress)
+    /// @param initialPayoutAddress Default payout address
+    function register(string memory code, address initialOwner, address initialPayoutAddress)
         external
         onlyRole(REGISTER_ROLE)
     {
-        _register(code, initialOwner, payoutAddress);
+        _register(code, initialOwner, initialPayoutAddress);
     }
 
     /// @notice Registers a new referral code in the system with a signature
     ///
     /// @param code Custom builder code for the builder code
     /// @param initialOwner Owner of the builder code
-    /// @param payoutAddress Default payout address for all chains
+    /// @param initialPayoutAddress Default payout address
     /// @param deadline Deadline to submit the registration
     /// @param registrar Address of the registrar
     /// @param signature Signature of the registrar
     function registerWithSignature(
         string memory code,
         address initialOwner,
-        address payoutAddress,
+        address initialPayoutAddress,
         uint48 deadline,
         address registrar,
         bytes memory signature
@@ -152,13 +152,14 @@ contract BuilderCodes is
         _checkRole(REGISTER_ROLE, registrar);
 
         // Check signature is valid
-        bytes32 structHash =
-            keccak256(abi.encode(REGISTRATION_TYPEHASH, keccak256(bytes(code)), initialOwner, payoutAddress, deadline));
+        bytes32 structHash = keccak256(
+            abi.encode(REGISTRATION_TYPEHASH, keccak256(bytes(code)), initialOwner, initialPayoutAddress, deadline)
+        );
         if (!SignatureCheckerLib.isValidSignatureNow(registrar, _hashTypedData(structHash), signature)) {
             revert Unauthorized();
         }
 
-        _register(code, initialOwner, payoutAddress);
+        _register(code, initialOwner, initialPayoutAddress);
     }
 
     /// @inheritdoc ERC721Upgradeable
@@ -167,6 +168,7 @@ contract BuilderCodes is
     /// @dev ERC721Upgradeable.safeTransferFrom inherits this function (and no other functions can initiate transfers)
     function transferFrom(address from, address to, uint256 tokenId) public override(ERC721Upgradeable, IERC721) {
         _checkRole(TRANSFER_ROLE, msg.sender);
+        // test
         super.transferFrom(from, to, tokenId);
     }
 
@@ -190,12 +192,12 @@ contract BuilderCodes is
     /// @notice Updates the default payout address for a referral code
     ///
     /// @param code Builder code
-    /// @param payoutAddress New default payout address
+    /// @param newPayoutAddress New default payout address
     /// @dev Only callable by referral code owner
-    function updatePayoutAddress(string memory code, address payoutAddress) external {
+    function updatePayoutAddress(string memory code, address newPayoutAddress) external {
         uint256 tokenId = toTokenId(code);
         if (_requireOwned(tokenId) != msg.sender) revert Unauthorized();
-        _updatePayoutAddress(tokenId, payoutAddress);
+        _updatePayoutAddress(tokenId, newPayoutAddress);
     }
 
     /// @notice Gets the default payout address for a referral code
@@ -329,22 +331,22 @@ contract BuilderCodes is
     ///
     /// @param code Referral code
     /// @param initialOwner Owner of the ref code
-    /// @param payoutAddress Default payout address for all chains
-    function _register(string memory code, address initialOwner, address payoutAddress) internal {
+    /// @param initialPayoutAddress Default payout address
+    function _register(string memory code, address initialOwner, address initialPayoutAddress) internal {
         uint256 tokenId = toTokenId(code);
         _mint(initialOwner, tokenId);
         emit CodeRegistered(tokenId, code);
-        _updatePayoutAddress(tokenId, payoutAddress);
+        _updatePayoutAddress(tokenId, initialPayoutAddress);
     }
 
     /// @notice Registers a new referral code
     ///
     /// @param tokenId Token ID of the referral code
-    /// @param payoutAddress Default payout address for all chains
-    function _updatePayoutAddress(uint256 tokenId, address payoutAddress) internal {
-        if (payoutAddress == address(0)) revert ZeroAddress();
-        _getRegistryStorage().payoutAddresses[tokenId] = payoutAddress;
-        emit PayoutAddressUpdated(tokenId, payoutAddress);
+    /// @param newPayoutAddress New payout address
+    function _updatePayoutAddress(uint256 tokenId, address newPayoutAddress) internal {
+        if (newPayoutAddress == address(0)) revert ZeroAddress();
+        _getRegistryStorage().payoutAddresses[tokenId] = newPayoutAddress;
+        emit PayoutAddressUpdated(tokenId, newPayoutAddress);
     }
 
     /// @notice Authorization for upgrades

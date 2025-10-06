@@ -8,7 +8,7 @@ contract HasRoleTest is BuilderCodesTest {
     /// @notice Test that the owner has any role
     ///
     /// @param role The role to check
-    function test_hasRole_true_isOwner(bytes32 role) public {
+    function test_hasRole_true_isOwner(bytes32 role) public view {
         assertTrue(builderCodes.hasRole(role, owner));
     }
 

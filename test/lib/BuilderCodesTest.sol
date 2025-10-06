@@ -2,7 +2,6 @@
 pragma solidity ^0.8.29;
 
 import {Test} from "forge-std/Test.sol";
-import {console} from "forge-std/console.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {IERC721Errors} from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
 
@@ -51,7 +50,7 @@ abstract contract BuilderCodesTest is Test {
     /// @param seed Random number to seed the invalid code generation
     ///
     /// @return code Invalid code containing disallowed characters
-    function _generateInvalidCode(uint256 seed) internal view returns (string memory code) {
+    function _generateInvalidCode(uint256 seed) internal pure returns (string memory code) {
         uint256 length = seed % 32 + 1; // 1-32 characters
         string memory invalidCharacters = "!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return _generateCode(seed, length, invalidCharacters);
