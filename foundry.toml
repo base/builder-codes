@@ -28,3 +28,7 @@ exclude_lints = [
     "erc20-unchecked-transfer", # Warning on ERC-721 transferFrom
     "unused-import" # BuilderCodesTest imports for purpose of dependent tests
 ]
+
+[fmt]
+sort_imports = true
+wrap_comments = true

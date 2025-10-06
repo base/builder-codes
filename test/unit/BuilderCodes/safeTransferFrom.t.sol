@@ -7,7 +7,8 @@ import {BuilderCodesTest} from "../../lib/BuilderCodesTest.sol";
 
 /// @notice Unit tests for BuilderCodes.safeTransferFrom
 contract SafeTransferFromTest is BuilderCodesTest {
-    /// @notice Test that safeTransferFrom(from, to, tokenId) reverts when the token owner doesn't have the transfer role
+    /// @notice Test that safeTransferFrom(from, to, tokenId) reverts when the token owner doesn't have the transfer
+    /// role
     ///
     /// @param from The from address
     /// @param to The to address
@@ -45,7 +46,8 @@ contract SafeTransferFromTest is BuilderCodesTest {
         assertEq(builderCodes.balanceOf(to), 0);
     }
 
-    /// @notice Test that safeTransferFrom(from, to, tokenId) reverts when the approved address doesn't have the transfer role
+    /// @notice Test that safeTransferFrom(from, to, tokenId) reverts when the approved address doesn't have the
+    /// transfer role
     ///
     /// @param from The from address
     /// @param to The to address
@@ -87,7 +89,8 @@ contract SafeTransferFromTest is BuilderCodesTest {
         assertEq(builderCodes.balanceOf(to), 0);
     }
 
-    /// @notice Test that safeTransferFrom(from, to, tokenId, data) reverts when the token owner doesn't have the transfer role
+    /// @notice Test that safeTransferFrom(from, to, tokenId, data) reverts when the token owner doesn't have the
+    /// transfer role
     ///
     /// @param from The from address
     /// @param to The to address
@@ -127,7 +130,8 @@ contract SafeTransferFromTest is BuilderCodesTest {
         assertEq(builderCodes.balanceOf(to), 0);
     }
 
-    /// @notice Test that safeTransferFrom(from, to, tokenId, data) reverts when the approved address doesn't have the transfer role
+    /// @notice Test that safeTransferFrom(from, to, tokenId, data) reverts when the approved address doesn't have the
+    /// transfer role
     ///
     /// @param from The from address
     /// @param to The to address
@@ -292,7 +296,8 @@ contract SafeTransferFromTest is BuilderCodesTest {
         assertEq(builderCodes.balanceOf(to), 1);
     }
 
-    /// @notice Test that safeTransferFrom(from, to, tokenId, data) succeeds when the approved address has the transfer role
+    /// @notice Test that safeTransferFrom(from, to, tokenId, data) succeeds when the approved address has the transfer
+    /// role
     ///
     /// @param from The from address
     /// @param to The to address
