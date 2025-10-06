@@ -7,7 +7,7 @@ import {BuilderCodes} from "../../../src/BuilderCodes.sol";
 /// @notice Unit tests for BuilderCodes.isRegistered
 contract IsRegisteredTest is BuilderCodesTest {
     /// @notice Test that isRegistered reverts when code is empty
-    function test_isRegistered_revert_emptyCode(address /* initialOwner */, address /* initialPayoutAddress */) public {
+    function test_isRegistered_revert_emptyCode() public {
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, ""));
         builderCodes.isRegistered("");
     }
@@ -15,11 +15,7 @@ contract IsRegisteredTest is BuilderCodesTest {
     /// @notice Test that isRegistered reverts when code is over 32 characters
     ///
     /// @param codeSeed The seed for generating the code
-    function test_isRegistered_revert_codeOver32Characters(
-        uint256 codeSeed,
-        address /* initialOwner */,
-        address /* initialPayoutAddress */
-    ) public {
+    function test_isRegistered_revert_codeOver32Characters(uint256 codeSeed) public {
         string memory longCode = _generateLongCode(codeSeed);
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, longCode));
         builderCodes.isRegistered(longCode);
@@ -28,11 +24,7 @@ contract IsRegisteredTest is BuilderCodesTest {
     /// @notice Test that isRegistered reverts when code contains invalid characters
     ///
     /// @param codeSeed The seed for generating the code
-    function test_isRegistered_revert_codeContainsInvalidCharacters(
-        uint256 codeSeed,
-        address /* initialOwner */,
-        address /* initialPayoutAddress */
-    ) public {
+    function test_isRegistered_revert_codeContainsInvalidCharacters(uint256 codeSeed) public {
         string memory invalidCode = _generateInvalidCode(codeSeed);
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, invalidCode));
         builderCodes.isRegistered(invalidCode);
@@ -41,11 +33,7 @@ contract IsRegisteredTest is BuilderCodesTest {
     /// @notice Test that isRegistered returns false for unregistered valid code
     ///
     /// @param codeSeed The seed for generating the code
-    function test_isRegistered_success_returnsFalseForUnregistered(
-        uint256 codeSeed,
-        address /* initialOwner */,
-        address /* initialPayoutAddress */
-    ) public view {
+    function test_isRegistered_success_returnsFalseForUnregistered(uint256 codeSeed) public view {
         string memory validCode = _generateValidCode(codeSeed);
         assertFalse(builderCodes.isRegistered(validCode));
     }

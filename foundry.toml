@@ -21,5 +21,8 @@ src = "test"
 
 [lint]
 lint_on_build = false
-ignore = ["test/**"]
-exclude_lints = ["mixed-case-variable", "mixed-case-function", "asm-keccak256"]
+exclude_lints = [
+    "mixed-case-variable", # *URI variable names
+    "mixed-case-function", # *URI function names
+    "asm-keccak256" # EIP-712 hashing
+]
