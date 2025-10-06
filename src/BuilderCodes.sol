@@ -13,9 +13,11 @@ import {LibBit} from "solady/utils/LibBit.sol";
 import {LibString} from "solady/utils/LibString.sol";
 import {SignatureCheckerLib} from "solady/utils/SignatureCheckerLib.sol";
 
-/// @notice Registry for builder codes
+/// @title BuilderCodes
 ///
-/// @author Coinbase
+/// @notice Registry for Builder Codes
+///
+/// @author Coinbase (https://github.com/base/builder-codes)
 contract BuilderCodes is
     Initializable,
     ERC721Upgradeable,
@@ -26,13 +28,17 @@ contract BuilderCodes is
     IERC4906
 {
     /// @notice EIP-712 storage structure for registry data
-    /// @custom:storage-location erc7201:base.flywheel.BuilderCodes
+    /// @custom:storage-location erc7201:base.BuilderCodes
     struct RegistryStorage {
-        /// @notice Base URI for referral code metadata
+        /// @dev Base URI for referral code metadata
         string uriPrefix;
-        /// @dev Mapping of referral code token IDs to payout recipients
+        /// @dev Mapping of builder code token IDs to payout recipients
         mapping(uint256 tokenId => address payoutAddress) payoutAddresses;
     }
+
+    ////////////////////////////////////////////////////////////////
+    ///                        Constants                         ///
+    ////////////////////////////////////////////////////////////////
 
     /// @notice Role identifier for addresses authorized to call register or sign registrations
     bytes32 public constant REGISTER_ROLE = keccak256("REGISTER_ROLE");
@@ -55,9 +61,13 @@ contract BuilderCodes is
     uint128 public constant ALLOWED_CHARACTERS_LOOKUP = 10633823847437083212121898993101832192;
 
     /// @notice EIP-1967 storage slot base for registry mapping using ERC-7201
-    /// @dev keccak256(abi.encode(uint256(keccak256("base.flywheel.BuilderCodes")) - 1)) & ~bytes32(uint256(0xff))
+    /// @dev keccak256(abi.encode(uint256(keccak256("base.BuilderCodes")) - 1)) & ~bytes32(uint256(0xff))
     bytes32 private constant REGISTRY_STORAGE_LOCATION =
-        0xe3aaf266708e5133bd922e269bb5e8f72a7444c3b231cbf562ddc67a383e5700;
+        0x015aa89e92b56dd64cffc1c9b26553e653b294bc48004bbcc753732d19b11100;
+
+    ////////////////////////////////////////////////////////////////
+    ///                          Events                          ///
+    ////////////////////////////////////////////////////////////////
 
     /// @notice Emitted when a referral code is registered
     ///
@@ -71,7 +81,11 @@ contract BuilderCodes is
     /// @param payoutAddress New default payout address
     event PayoutAddressUpdated(uint256 indexed tokenId, address payoutAddress);
 
-    /// @notice Emits when the contract URI is updated (ERC-7572)
+    ////////////////////////////////////////////////////////////////
+    ///                          Errors                          ///
+    ////////////////////////////////////////////////////////////////
+
+    /// @notice Emitted when the contract URI is updated (ERC-7572)
     event ContractURIUpdated();
 
     /// @notice Thrown when call doesn't have required permissions
@@ -94,6 +108,10 @@ contract BuilderCodes is
 
     /// @notice Thrown when trying to renounce ownership (disabled for security)
     error OwnershipRenunciationDisabled();
+
+    ////////////////////////////////////////////////////////////////
+    ///                    External Functions                    ///
+    ////////////////////////////////////////////////////////////////
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -326,6 +344,10 @@ contract BuilderCodes is
     function renounceOwnership() public pure override {
         revert OwnershipRenunciationDisabled();
     }
+
+    ////////////////////////////////////////////////////////////////
+    ///                    Internal Functions                    ///
+    ////////////////////////////////////////////////////////////////
 
     /// @notice Registers a new referral code
     ///
