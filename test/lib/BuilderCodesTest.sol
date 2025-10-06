@@ -51,7 +51,7 @@ abstract contract BuilderCodesTest is Test {
     /// @param seed Random number to seed the invalid code generation
     ///
     /// @return code Invalid code containing disallowed characters
-    function _generateInvalidCode(uint256 seed) internal view returns (string memory code) {
+    function _generateInvalidCode(uint256 seed) internal pure returns (string memory code) {
         uint256 length = seed % 32 + 1; // 1-32 characters
         string memory invalidCharacters = "!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return _generateCode(seed, length, invalidCharacters);

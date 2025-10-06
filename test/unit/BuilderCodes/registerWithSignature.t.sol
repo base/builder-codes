@@ -92,12 +92,11 @@ contract RegisterWithSignatureTest is BuilderCodesTest {
 
     /// @notice Test that registerWithSignature reverts when attempting to register an empty code
     ///
-    /// @param codeSeed The seed for generating the code
     /// @param initialOwner The initial owner address
     /// @param payoutAddress The payout address
     /// @param deadline The registration deadline
     function test_registerWithSignature_revert_emptyCode(
-        uint256 codeSeed,
+        uint256 /* codeSeed */,
         address initialOwner,
         address payoutAddress,
         uint48 deadline

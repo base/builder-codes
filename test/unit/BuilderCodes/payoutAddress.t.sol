@@ -9,12 +9,10 @@ contract PayoutAddressTest is BuilderCodesTest {
     /// @notice Test that payoutAddress(string) reverts when code is not registered
     ///
     /// @param codeSeed The seed for generating the code
-    /// @param initialOwner The initial owner address
-    /// @param initialPayoutAddress The initial payout address
     function test_payoutAddressString_revert_unregistered(
         uint256 codeSeed,
-        address initialOwner,
-        address initialPayoutAddress
+        address /* initialOwner */,
+        address /* initialPayoutAddress */
     ) public {
         string memory code = _generateValidCode(codeSeed);
 
@@ -23,10 +21,7 @@ contract PayoutAddressTest is BuilderCodesTest {
     }
 
     /// @notice Test that payoutAddress(string) reverts when code is empty
-    ///
-    /// @param initialOwner The initial owner address
-    /// @param initialPayoutAddress The initial payout address
-    function test_payoutAddressString_revert_emptyCode(address initialOwner, address initialPayoutAddress) public {
+    function test_payoutAddressString_revert_emptyCode(address /* initialOwner */, address /* initialPayoutAddress */) public {
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, ""));
         builderCodes.payoutAddress("");
     }
@@ -34,12 +29,10 @@ contract PayoutAddressTest is BuilderCodesTest {
     /// @notice Test that payoutAddress(string) reverts when code is over 32 characters
     ///
     /// @param codeSeed The seed for generating the code
-    /// @param initialOwner The initial owner address
-    /// @param initialPayoutAddress The initial payout address
     function test_payoutAddressString_revert_codeOver32Characters(
         uint256 codeSeed,
-        address initialOwner,
-        address initialPayoutAddress
+        address /* initialOwner */,
+        address /* initialPayoutAddress */
     ) public {
         string memory longCode = _generateLongCode(codeSeed);
 
@@ -50,12 +43,10 @@ contract PayoutAddressTest is BuilderCodesTest {
     /// @notice Test that payoutAddress(string) reverts when code contains invalid characters
     ///
     /// @param codeSeed The seed for generating the code
-    /// @param initialOwner The initial owner address
-    /// @param initialPayoutAddress The initial payout address
     function test_payoutAddressString_revert_codeContainsInvalidCharacters(
         uint256 codeSeed,
-        address initialOwner,
-        address initialPayoutAddress
+        address /* initialOwner */,
+        address /* initialPayoutAddress */
     ) public {
         string memory invalidCode = _generateInvalidCode(codeSeed);
 
@@ -66,12 +57,10 @@ contract PayoutAddressTest is BuilderCodesTest {
     /// @notice Test that payoutAddress(uint256) reverts when token ID is not registered
     ///
     /// @param tokenId The token ID
-    /// @param initialOwner The initial owner address
-    /// @param initialPayoutAddress The initial payout address
     function test_payoutAddressUint256_revert_unregistered(
         uint256 tokenId,
-        address initialOwner,
-        address initialPayoutAddress
+        address /* initialOwner */,
+        address /* initialPayoutAddress */
     ) public {
         // Generate a valid token ID but don't register it
         string memory code = _generateValidCode(tokenId);
@@ -82,10 +71,7 @@ contract PayoutAddressTest is BuilderCodesTest {
     }
 
     /// @notice Test that payoutAddress(uint256) reverts when token ID represents empty code
-    ///
-    /// @param initialOwner The initial owner address
-    /// @param initialPayoutAddress The initial payout address
-    function test_payoutAddressUint256_revert_emptyCode(address initialOwner, address initialPayoutAddress) public {
+    function test_payoutAddressUint256_revert_emptyCode(address /* initialOwner */, address /* initialPayoutAddress */) public {
         uint256 emptyTokenId = 0;
 
         vm.expectRevert(abi.encodeWithSelector(BuilderCodes.InvalidCode.selector, ""));
@@ -95,12 +81,10 @@ contract PayoutAddressTest is BuilderCodesTest {
     /// @notice Test that payoutAddress(uint256) reverts when token ID represents code with invalid characters
     ///
     /// @param codeSeed The token ID representing invalid code
-    /// @param initialOwner The initial owner address
-    /// @param initialPayoutAddress The initial payout address
     function test_payoutAddressUint256_revert_codeContainsInvalidCharacters(
         uint256 codeSeed,
-        address initialOwner,
-        address initialPayoutAddress
+        address /* initialOwner */,
+        address /* initialPayoutAddress */
     ) public {
         // Use an invalid token ID that doesn't normalize properly
         string memory invalidCode = _generateInvalidCode(codeSeed);
