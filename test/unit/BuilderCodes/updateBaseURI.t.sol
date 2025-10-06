@@ -54,11 +54,8 @@ contract UpdateBaseURITest is BuilderCodesTest {
         builderCodes.updateBaseURI(uriPrefix);
 
         string memory tokenURI = builderCodes.tokenURI(tokenId);
-        if (bytes(uriPrefix).length > 0) {
-            assertEq(tokenURI, string.concat(uriPrefix, validCode));
-        } else {
-            assertEq(tokenURI, "");
-        }
+        if (bytes(uriPrefix).length > 0) assertEq(tokenURI, string.concat(uriPrefix, validCode));
+        else assertEq(tokenURI, "");
     }
 
     /// @notice Test that updateBaseURI successfully updates the code URI
@@ -75,11 +72,8 @@ contract UpdateBaseURITest is BuilderCodesTest {
         builderCodes.updateBaseURI(uriPrefix);
 
         string memory codeURI = builderCodes.codeURI(validCode);
-        if (bytes(uriPrefix).length > 0) {
-            assertEq(codeURI, string.concat(uriPrefix, validCode));
-        } else {
-            assertEq(codeURI, "");
-        }
+        if (bytes(uriPrefix).length > 0) assertEq(codeURI, string.concat(uriPrefix, validCode));
+        else assertEq(codeURI, "");
     }
 
     /// @notice Test that updateBaseURI successfully updates the contract URI
@@ -90,11 +84,8 @@ contract UpdateBaseURITest is BuilderCodesTest {
         builderCodes.updateBaseURI(uriPrefix);
 
         string memory contractURI = builderCodes.contractURI();
-        if (bytes(uriPrefix).length > 0) {
-            assertEq(contractURI, string.concat(uriPrefix, "contractURI.json"));
-        } else {
-            assertEq(contractURI, "");
-        }
+        if (bytes(uriPrefix).length > 0) assertEq(contractURI, string.concat(uriPrefix, "contractURI.json"));
+        else assertEq(contractURI, "");
     }
 
     /// @notice Test that updateBaseURI emits the ERC4906 BatchMetadataUpdate event
