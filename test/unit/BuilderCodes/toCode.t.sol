@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-import {LibString} from "solady/utils/LibString.sol";
-
 import {BuilderCodesTest} from "../../lib/BuilderCodesTest.sol";
 import {BuilderCodes} from "../../../src/BuilderCodes.sol";
 

@@ -4,7 +4,6 @@ pragma solidity ^0.8.29;
 import {IAccessControl} from "@openzeppelin/contracts/access/IAccessControl.sol";
 
 import {BuilderCodesTest} from "../lib/BuilderCodesTest.sol";
-import {BuilderCodes} from "../../src/BuilderCodes.sol";
 import {MockTransferRules} from "../lib/mocks/MockTransferRules.sol";
 
 /// @notice Integration tests for BuilderCodes transfers
