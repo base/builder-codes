@@ -1,6 +1,6 @@
 # Builder Codes
 
-An ERC-721 NFT contract that enables builders to register unique codes (e.g., `"myapp"`) with an associated payout addresses for revenue attribution and distribution.
+An ERC-721 NFT contract that enables builders to register unique codes (e.g., `"myapp"`) with an associated payout addresses for revenue attribution and distribution. Implements the [ERC-8021](https://eip.tools/eip/8021) `ICodesRegistry` interface.
 
 ## Features
 
